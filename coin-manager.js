@@ -41,7 +41,7 @@ CoinManager.prototype.generateRandomAvailablePosition = function (coinRadius) {
     var tempPosition = {
       x: this.cellX + Math.round(Math.random() * (this.cellWidth - coinDiameter) + coinRadius),
       y: this.cellY + Math.round(Math.random() * (this.cellHeight - coinDiameter) + coinRadius)
-    }
+    };
 
     var tempPoint = new SAT.Vector(tempPosition.x, tempPosition.y);
 

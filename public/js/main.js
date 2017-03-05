@@ -26,32 +26,36 @@ window.onload = function () {
     var SERVER_WORKER_ID;
 
     var youTextures = {
-        up: 'img/you-back.gif',
-        left: 'img/you-side-left.gif',
-        right: 'img/you-side-right.gif',
-        down: 'img/you-front.gif'
+        up: 'img/you-back.png',
+        left: 'img/you-side-left.png',
+        right: 'img/you-side-right.png',
+        down: 'img/you-front.png'
     };
 
     var othersTextures = {
-        up: 'img/others-back.gif',
-        left: 'img/others-side-left.gif',
-        right: 'img/others-side-right.gif',
-        down: 'img/others-front.gif'
+        up: 'img/others-back.png',
+        left: 'img/others-side-left.png',
+        right: 'img/others-side-right.png',
+        down: 'img/others-front.png'
     };
 
     var botTextures = {
-        up: 'img/bot-back.gif',
-        left: 'img/bot-side-left.gif',
-        right: 'img/bot-side-right.gif',
-        down: 'img/bot-front.gif'
+        up: 'img/bot-back.png',
+        left: 'img/bot-side-left.png',
+        right: 'img/bot-side-right.png',
+        down: 'img/bot-front.png'
     };
 
     // Map the score value to the texture.
-    var grassTextures = {
-        1: 'img/grass-1.gif',
-        2: 'img/grass-2.gif',
-        3: 'img/grass-3.gif',
-        4: 'img/grass-4.gif'
+    var cristalTextures = {
+        1: 'img/cristal-1.png',
+        2: 'img/cristal-2.png',
+        3: 'img/cristal-3.png',
+        4: 'img/cristal-4.png'
+    };
+
+    var obstacles = {
+        1: 'img/obstacle.png'
     };
 
     // 1 means no smoothing. 0.1 is quite smooth.
@@ -111,10 +115,12 @@ window.onload = function () {
         game.load.image('bot-right', botTextures.right);
         game.load.image('bot-left', botTextures.left);
 
-        game.load.image('grass-1', grassTextures[1]);
-        game.load.image('grass-2', grassTextures[2]);
-        game.load.image('grass-3', grassTextures[3]);
-        game.load.image('grass-4', grassTextures[4]);
+        game.load.image('cristal-1', cristalTextures[1]);
+        game.load.image('cristal-2', cristalTextures[2]);
+        game.load.image('cristal-3', cristalTextures[3]);
+        game.load.image('cristal-4', cristalTextures[4]);
+
+        game.load.image('obstacle', obstacles[1]);
     }
 
     function handleCellData(stateList) {
@@ -224,9 +230,9 @@ window.onload = function () {
         user.score = userData.score;
         user.sprite = sprite;
 
-        user.sprite.width = Math.round(userData.diam * 0.73);
+        /*user.sprite.width = Math.round(userData.diam * 0.93);
         user.sprite.height = userData.diam;
-        user.diam = user.sprite.width;
+        user.diam = user.sprite.width;*/
 
         moveUser(userData.id, userData.x, userData.y);
 
@@ -285,7 +291,7 @@ window.onload = function () {
             var coin = coinData;
             coins[coinData.id] = coin;
             coin.sprite = createTexturedSprite({
-                texture: 'grass-' + (coinData.t || '1')
+                texture: 'cristal-' + (coinData.t || '1')
             });
             coin.sprite.x = coinData.x;
             coin.sprite.y = coinData.y;
@@ -303,7 +309,7 @@ window.onload = function () {
 
         function joinWorld() {
             socket.emit('join', {
-                name: playerName,
+                name: playerName
             }, function (err, playerData) {
                 playerId = playerData.id;
                 updateCellWatchers(playerData, 'cell-data', handleCellData);
