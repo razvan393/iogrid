@@ -1,7 +1,7 @@
 var uuid = require('uuid');
 var SAT = require('sat');
 
-var BOT_DEFAULT_DIAMETER = 80;
+var BOT_DEFAULT_DIAMETER = 200;
 var BOT_DEFAULT_SPEED = 1;
 var BOT_DEFAULT_MASS = 10;
 var BOT_DEFAULT_CHANGE_DIRECTION_PROBABILITY = 0.01;

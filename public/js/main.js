@@ -8,9 +8,9 @@ window.onload = function () {
     //  Although it will work fine with this tutorial, it's almost certainly not the most current version.
     //  Be sure to replace it with an updated version before you start experimenting with adding your own code.
 
-    var game, playerId, player;
-    users = {};
-    coins = {};
+    var game, playerId, player, bulletTime = 0, bullets;
+    var users = {};
+    var coins = {};
 
     var WORLD_WIDTH;
     var WORLD_HEIGHT;
@@ -54,6 +54,10 @@ window.onload = function () {
         4: 'img/cristal-4.png'
     };
 
+    var bulletImages = {
+        1: 'img/bullet.png'
+    };
+
     var obstacles = {
         1: 'img/obstacle.png'
     };
@@ -95,7 +99,8 @@ window.onload = function () {
             up: game.input.keyboard.addKey(Phaser.Keyboard.UP),
             down: game.input.keyboard.addKey(Phaser.Keyboard.DOWN),
             right: game.input.keyboard.addKey(Phaser.Keyboard.RIGHT),
-            left: game.input.keyboard.addKey(Phaser.Keyboard.LEFT)
+            left: game.input.keyboard.addKey(Phaser.Keyboard.LEFT),
+            shoot: game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
         };
 
         game.load.image('background', BACKGROUND_TEXTURE);
@@ -119,6 +124,8 @@ window.onload = function () {
         game.load.image('cristal-2', cristalTextures[2]);
         game.load.image('cristal-3', cristalTextures[3]);
         game.load.image('cristal-4', cristalTextures[4]);
+
+        game.load.image('bullet', bulletImages[1]);
 
         game.load.image('obstacle', obstacles[1]);
     }
@@ -299,10 +306,50 @@ window.onload = function () {
         }
     }
 
+    function fireBullet() {
+        if(game.time.now > bulletTime) {
+            var bullet = bullets.getFirstExists(false);
+
+            if(bullet) {
+                if (player.direction == 'up') {
+                    bullet.reset(player.x, player.y);
+                    bullet.body.velocity.y = -1200;
+                }
+                if (player.direction == 'down') {
+                    bullet.reset(player.x, player.y + 100);
+                    bullet.body.velocity.y = 1200;
+                }
+                if (player.direction == 'left') {
+                    bullet.reset(player.x, player.y);
+                    bullet.body.velocity.x = -1200;
+                }
+                if (player.direction == 'right') {
+                    bullet.reset(player.x, player.y);
+                    bullet.body.velocity.x = 1200;
+                }
+
+                bulletTime = game.time.now + 200;
+            }
+        }
+    }
+
+    function resetBullet(bullet) {
+        bullet.kill();
+    }
+
     function create() {
-        background = game.add.tileSprite(0, 0, WORLD_WIDTH, WORLD_HEIGHT, 'background');
+        var background = game.add.tileSprite(0, 0, WORLD_WIDTH, WORLD_HEIGHT, 'background');
         game.time.advancedTiming = true;
         game.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
+
+        bullets = game.add.group();
+        bullets.enableBody = true;
+        bullets.physicsBodyType = Phaser.Physics.ARCADE;
+        bullets.createMultiple(50, 'bullet');
+        bullets.setAll('anchor.x', 0.5);
+        bullets.setAll('anchor.y', 1);
+        bullets.callAll('events.onOutOfBounds.add', 'events.onOutOfBounds', resetBullet);
+        bullets.setAll('checkWorldBounds', true);
 
         // Generate a random name for the user.
         var playerName = 'user-' + Math.round(Math.random() * 10000);
@@ -352,6 +399,9 @@ window.onload = function () {
         if (keys.left.isDown) {
             playerOp.l = 1;
             didAction = true;
+        }
+        if (keys.shoot.isDown) {
+            fireBullet();
         }
         if (didAction && Date.now() - lastActionTime >= USER_INPUT_INTERVAL) {
             lastActionTime = Date.now();
