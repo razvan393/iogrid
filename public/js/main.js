@@ -94,6 +94,13 @@ window.onload = function () {
         });
     });
 
+    document.addEventListener('keydown', function(event) {
+        var evt = event || window.event;
+        if (evt.keyCode == 27) {
+            document.location = '/index.html';
+        }
+        });
+
     function preload() {
         keys = {
             up: game.input.keyboard.addKey(Phaser.Keyboard.UP),
@@ -351,8 +358,14 @@ window.onload = function () {
         bullets.callAll('events.onOutOfBounds.add', 'events.onOutOfBounds', resetBullet);
         bullets.setAll('checkWorldBounds', true);
 
-        // Generate a random name for the user.
+        // Generate a random name for the user if the user has not choose one.
+
+        var nameValue = sessionStorage.getItem('playerName');
         var playerName = 'user-' + Math.round(Math.random() * 10000);
+
+        if (nameValue != '') {
+            playerName = nameValue;
+        }
 
         function joinWorld() {
             socket.emit('join', {

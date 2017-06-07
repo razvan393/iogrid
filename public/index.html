@@ -1,17 +1,28 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Shoot'em up</title>
+    <title>Collect'em up</title>
     <link rel="icon" type="image/png" href="/img/favicon.ico">
     <link rel="stylesheet" type="text/css" href="/css/style.css">
-    <script type="text/javascript" src="/js/socketcluster.js"></script>
-    <script src="/js/sc-codec-min-bin.js"></script>
-    <script src="/js/phaser.min.js"></script>
-    <script src="/js/rbush.min.js"></script>
-    <script src="/js/SAT.min.js"></script>
-    <script src="/js/channel-grid.js"></script>
-    <script type="text/javascript" src ="/js/main.js"></script>
+
   </head>
   <body>
+  <div class="container">
+    <div class="logo">
+      <img src="img/logo-index.png" />
+    </div>
+    <div class="form-container">
+      <input id="name-input" placeholder="Choose your name" />
+      <button id="start">Start game</button>
+    </div>
+  </div>
   </body>
+<script type="application/javascript">
+  document.getElementById('start').addEventListener('click', function (event) {
+    event.preventDefault();
+
+    sessionStorage.setItem('playerName', document.getElementById('name-input').value);
+    document.location = '/game.html';
+  })
+</script>
 </html>
