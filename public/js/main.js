@@ -141,6 +141,13 @@ window.onload = function () {
         stateList.forEach(function (state) {
             if (state.type == 'player') {
                 updateUser(state);
+                if (state.subtype != 'bot' && state.remove) {
+                    var user = users[state.id];
+                    sessionStorage.setItem('score', user.score);
+                    sessionStorage.setItem('name', user.name);
+                    removeUser(user);
+                    document.location = '/index.html'
+                }
             } else if (state.type == 'coin') {
                 if (state.delete) {
                     removeCoin(state);
@@ -244,6 +251,7 @@ window.onload = function () {
         user.score = userData.score;
         user.sprite = sprite;
 
+        //todo
         /*user.sprite.width = Math.round(userData.diam * 0.93);
         user.sprite.height = userData.diam;
         user.diam = user.sprite.width;*/

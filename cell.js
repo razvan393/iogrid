@@ -408,6 +408,10 @@ CellController.prototype.resolvePlayerCollision = function (player, otherPlayer)
     otherPlayer.x += olv.x * playerBuff;
     otherPlayer.y += olv.y * playerBuff;
 
+    if (player.subtype != 'bot' && otherPlayer.subtype == 'bot') {
+      player.remove = true;
+    }
+
     /*
       Whenever we have one state affecting the (x, y) coordinates of
       another state, we should group them together using the util.groupStates() function.
