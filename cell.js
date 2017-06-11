@@ -304,6 +304,9 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins) {
     if (player.coinOverlaps) {
       player.coinOverlaps.forEach(function (coin) {
         if (self.testCircleCollision(player, coin).collided) {
+          if (coin.v == 12) {
+              player.superpower = true;
+          }
           player.score += coin.v;
           self.coinManager.removeCoin(coin.id);
         }
@@ -410,6 +413,11 @@ CellController.prototype.resolvePlayerCollision = function (player, otherPlayer)
 
     if (player.subtype != 'bot' && otherPlayer.subtype == 'bot') {
       player.remove = true;
+    }
+
+    if (player.superpower) {
+        otherPlayer.remove = true;
+        player.superpower = false;
     }
 
     /*

@@ -143,10 +143,14 @@ window.onload = function () {
                 updateUser(state);
                 if (state.subtype != 'bot' && state.remove) {
                     var user = users[state.id];
-                    sessionStorage.setItem('score', user.score);
-                    sessionStorage.setItem('name', user.name);
+                    var overlay = document.querySelectorAll('[data-attr="'+ user.name +'"]')[0];
+                    var popup = document.getElementById("score-pop");
+                    if (state.remove) {
+                        overlay.style.display = 'block';
+                        popup.style.display = 'block';
+                        popup.firstElementChild.textContent = 'You scored ' + user.score + ' points';
+                    }
                     removeUser(user);
-                    document.location = '/index.html'
                 }
             } else if (state.type == 'coin') {
                 if (state.delete) {
@@ -250,6 +254,12 @@ window.onload = function () {
 
         user.score = userData.score;
         user.sprite = sprite;
+
+        var overlay = document.getElementById('overlay');
+        var checkPlayer = user.name.indexOf('bot');
+        if (checkPlayer == -1) {
+            overlay.setAttribute('data-attr', user.name);
+        }
 
         //todo
         /*user.sprite.width = Math.round(userData.diam * 0.93);

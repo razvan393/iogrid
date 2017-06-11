@@ -7,10 +7,6 @@
 
   </head>
   <body>
-  <div id="overlay"></div>
-  <div class="popup-box" id="score-pop">
-    <p></p>
-  </div>
   <div class="container">
     <div class="logo">
       <img src="img/logo-index.png" />
@@ -25,30 +21,9 @@
   (function() {
     document.getElementById('start').addEventListener('click', function (event) {
       event.preventDefault();
-
       sessionStorage.setItem('playerName', document.getElementById('name-input').value);
       document.location = '/game.html';
     });
-
-    if (sessionStorage.getItem('score')) {
-      var overlay = document.getElementById("overlay");
-      var popup = document.getElementById("score-pop");
-      var input = document.getElementById('name-input');
-
-      if (sessionStorage.getItem('name')) {
-        input.value = sessionStorage.getItem('name');
-      }
-
-      overlay.style.display = 'block';
-      popup.style.display = 'block';
-      popup.firstElementChild.textContent = 'Your scored ' + sessionStorage.getItem('score') + ' points';
-
-      overlay.onclick = function () {
-        overlay.style.display = "none";
-        popup.style.display = "none";
-        sessionStorage.clear();
-      };
-    }
   })();
 </script>
 </html>

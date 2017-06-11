@@ -718,7 +718,8 @@ module.exports.run = function (worker) {
         diam: PLAYER_DIAMETER,
         mass: PLAYER_MASS,
         score: 0,
-        remove: false
+        remove: false,
+        superpower: false
       };
 
       socket.player = stateManager.create(player);

@@ -13,5 +13,17 @@
     <script type="text/javascript" src ="/js/main.js"></script>
 </head>
 <body>
+<div id="overlay" data-attr="0"></div>
+<div class="popup-box" id="score-pop">
+    <p></p>
+    <button id="retry" class="retry">Retry</button>
+</div>
 </body>
+<script type="application/javascript">
+    (function() {
+        document.getElementsByClassName('retry')[0].addEventListener('click', function () {
+           document.location = '/index.html';
+        });
+    })();
+</script>
 </html>
