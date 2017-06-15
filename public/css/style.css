@@ -13,7 +13,8 @@ body .container {
     height: 100%;
     width: 100%;
 }
-body .form-container {
+body .form-container,
+body .instructions {
     height: auto;
     max-width: 600px;
     margin: 0 auto;
@@ -30,6 +31,10 @@ body .logo {
 body button {
     color: #4183D7;
     background: #E4F1FE;
+}
+
+body .instructions {
+    color: #4183D7;
 }
 
 body input {

@@ -64,7 +64,7 @@ window.onload = function () {
 
     // 1 means no smoothing. 0.1 is quite smooth.
     var CAMERA_SMOOTHING = 1;
-    var BACKGROUND_TEXTURE = 'img/background-texture.png';
+    var BACKGROUND_TEXTURE = 'img/background-texture.jpg';
 
     socket.emit('getWorldInfo', null, function (err, data) {
         WORLD_WIDTH = data.width;
@@ -143,12 +143,13 @@ window.onload = function () {
                 updateUser(state);
                 if (state.subtype != 'bot' && state.remove) {
                     var user = users[state.id];
-                    var overlay = document.querySelectorAll('[data-attr="'+ user.name +'"]')[0];
+                    var overlay = document.getElementById('overlay');
                     var popup = document.getElementById("score-pop");
-                    if (state.remove) {
+                    if (state.remove && overlay.dataset.attr == user.name) {
                         overlay.style.display = 'block';
                         popup.style.display = 'block';
                         popup.firstElementChild.textContent = 'You scored ' + user.score + ' points';
+                        state.remove = false;
                     }
                     removeUser(user);
                 }
@@ -257,7 +258,7 @@ window.onload = function () {
 
         var overlay = document.getElementById('overlay');
         var checkPlayer = user.name.indexOf('bot');
-        if (checkPlayer == -1) {
+        if (overlay.dataset.attr == '0' && checkPlayer == -1) {
             overlay.setAttribute('data-attr', user.name);
         }
 

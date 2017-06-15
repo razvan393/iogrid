@@ -418,6 +418,7 @@ CellController.prototype.resolvePlayerCollision = function (player, otherPlayer)
     if (player.superpower) {
         otherPlayer.remove = true;
         player.superpower = false;
+        player.score = player.score + otherPlayer.score;
     }
 
     /*
