@@ -1,6 +1,6 @@
-var _ = require('lodash');
+const _ = require('lodash');
 
-var Util = function (options) {
+const Util = function (options) {
   this.cellData = options.cellData;
 };
 
@@ -18,7 +18,7 @@ Util.prototype.groupStates = function (stateList) {
 };
 
 Util.prototype.ungroupStates = function (stateList) {
-  var self = this;
+  const self = this;
 
   stateList.forEach(function (state) {
     if (!state.external && state.pendingGroup) {
@@ -34,18 +34,18 @@ Util.prototype.ungroupStates = function (stateList) {
 };
 
 Util.prototype.ungroupStateFromAll = function (state) {
-  var self = this;
+  const self = this;
 
-  var groupMembers = state.pendingGroup || {};
-  var stateUngroupList = [];
+  const groupMembers = state.pendingGroup || {};
+  const stateUngroupList = [];
 
   Object.keys(groupMembers).forEach(function (memberId) {
-    var cellIndex = state.ccid;
-    var type = state.type;
+    const cellIndex = state.ccid;
+    const type = state.type;
 
-    var memberSimpleState = groupMembers[memberId];
+    const memberSimpleState = groupMembers[memberId];
     if (self.cellData[cellIndex] && self.cellData[cellIndex][type]) {
-      var memberState = self.cellData[cellIndex][type][memberId];
+      const memberState = self.cellData[cellIndex][type][memberId];
       if (memberState) {
         stateUngroupList.push(memberState);
       }

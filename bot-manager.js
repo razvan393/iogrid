@@ -1,12 +1,11 @@
-var uuid = require('uuid');
-var SAT = require('sat');
+const uuid = require('uuid');
 
-var BOT_DEFAULT_DIAMETER = 80;
-var BOT_DEFAULT_SPEED = 1;
-var BOT_DEFAULT_MASS = 10;
-var BOT_DEFAULT_CHANGE_DIRECTION_PROBABILITY = 0.01;
+const BOT_DEFAULT_DIAMETER = 80;
+const BOT_DEFAULT_SPEED = 1;
+const BOT_DEFAULT_MASS = 10;
+const BOT_DEFAULT_CHANGE_DIRECTION_PROBABILITY = 0.01;
 
-var BotManager = function (options) {
+const BotManager = function (options) {
   this.worldWidth = options.worldWidth;
   this.worldHeight = options.worldHeight;
   if (options.botMoveSpeed == null) {
@@ -27,23 +26,22 @@ var BotManager = function (options) {
 };
 
 BotManager.prototype.generateRandomPosition = function (botRadius) {
-  var botDiameter = botRadius * 2;
-  var position = {
+  const botDiameter = botRadius * 2;
+  return {
     x: Math.round(Math.random() * (this.worldWidth - botDiameter) + botRadius),
     y: Math.round(Math.random() * (this.worldHeight - botDiameter) + botRadius)
   };
-  return position;
 };
 
 BotManager.prototype.addBot = function (options) {
   if (!options) {
     options = {};
   }
-  var diameter = options.diam || this.botDefaultDiameter;
-  var radius = Math.round(diameter / 2);
-  var botId = uuid.v4();
+  const diameter = options.diam || this.botDefaultDiameter;
+  const radius = Math.round(diameter / 2);
+  const botId = uuid.v4();
 
-  var bot = {
+  const bot = {
     id: botId,
     type: 'player',
     subtype: 'bot',
@@ -59,7 +57,7 @@ BotManager.prototype.addBot = function (options) {
     bot.x = options.x;
     bot.y = options.y;
   } else {
-    var position = this.generateRandomPosition(radius);
+    const position = this.generateRandomPosition(radius);
     if (options.x) {
       bot.x = options.x;
     } else {

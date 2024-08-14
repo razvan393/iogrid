@@ -44,18 +44,18 @@
   External states should not be modified because they belong to a different cell and the change will be ignored.
 */
 
-var _ = require('lodash');
-var rbush = require('rbush');
-var SAT = require('sat');
-var config = require('./config');
-var BotManager = require('./bot-manager').BotManager;
-var CoinManager = require('./coin-manager').CoinManager;
+const _ = require('lodash');
+const rbush = require('rbush');
+const SAT = require('sat');
+const config = require('./config');
+const BotManager = require('./bot-manager').BotManager;
+const CoinManager = require('./coin-manager').CoinManager;
 
 // This controller will be instantiated once for each
 // cell in our world grid.
 
-var CellController = function (options, util) {
-  var self = this;
+const CellController = function (options, util) {
+  const self = this;
 
   this.options = options;
   this.cellIndex = options.cellIndex;
@@ -77,7 +77,7 @@ var CellController = function (options, util) {
   this.coinDropInterval = config.COIN_DROP_INTERVAL * this.worldCellCount;
   this.botCount = Math.round(config.BOT_COUNT / this.worldCellCount);
 
-  var cellData = options.cellData;
+  const cellData = options.cellData;
 
   this.botManager = new BotManager({
     worldWidth: config.WORLD_WIDTH,
@@ -92,8 +92,8 @@ var CellController = function (options, util) {
     cellData.player = {};
   }
 
-  for (var b = 0; b < this.botCount; b++) {
-    var bot = this.botManager.addBot();
+  for (let b = 0; b < this.botCount; b++) {
+    const bot = this.botManager.addBot();
     cellData.player[bot.id] = bot;
   }
 
@@ -125,9 +125,9 @@ var CellController = function (options, util) {
   });
 
   this.coinTypes = [];
-  var probRangeStart = 0;
+  let probRangeStart = 0;
   config.COIN_TYPES.forEach(function (coinType) {
-    var coinTypeClone = _.cloneDeep(coinType);
+    const coinTypeClone = _.cloneDeep(coinType);
     coinTypeClone.prob = probRangeStart;
     self.coinTypes.push(coinTypeClone);
     probRangeStart += coinType.probability;
@@ -156,11 +156,11 @@ CellController.prototype.run = function (cellData) {
   if (!cellData.coin) {
     cellData.coin = {};
   }
-  var players = cellData.player;
-  var coins = cellData.coin;
+  const players = cellData.player;
+  const coins = cellData.coin;
 
   // Sorting is important to achieve consistency across cells.
-  var playerIds = Object.keys(players).sort(this.playerCompareFn);
+  const playerIds = Object.keys(players).sort(this.playerCompareFn);
 
   this.findPlayerOverlaps(playerIds, players, coins);
   this.dropCoins(coins);
@@ -169,19 +169,19 @@ CellController.prototype.run = function (cellData) {
 };
 
 CellController.prototype.dropCoins = function (coins) {
-  var now = Date.now();
+  const now = Date.now();
 
   if (now - this.lastCoinDrop >= this.coinManager.coinDropInterval &&
     this.coinManager.coinCount < this.coinManager.coinMaxCount) {
 
     this.lastCoinDrop = now;
 
-    var rand = Math.random();
-    var chosenCoinType;
+    const rand = Math.random();
+    let chosenCoinType;
 
-    var numTypes = this.coinTypes.length;
-    for (var i = numTypes - 1; i >= 0; i--) {
-      var curCoinType = this.coinTypes[i];
+    const numTypes = this.coinTypes.length;
+    for (let i = numTypes - 1; i >= 0; i--) {
+      const curCoinType = this.coinTypes[i];
       if (rand >= curCoinType.prob) {
         chosenCoinType = curCoinType;
         break;
@@ -193,7 +193,7 @@ CellController.prototype.dropCoins = function (coins) {
         'Check that probabilities add up to 1 in COIN_TYPES config option.');
     }
 
-    var coin = this.coinManager.addCoin(chosenCoinType.value, chosenCoinType.type, chosenCoinType.radius);
+    const coin = this.coinManager.addCoin(chosenCoinType.value, chosenCoinType.type, chosenCoinType.radius);
     if (coin) {
       coins[coin.id] = coin;
     }
@@ -201,20 +201,20 @@ CellController.prototype.dropCoins = function (coins) {
 };
 
 CellController.prototype.generateBotOps = function (playerIds, players, coins) {
-  var self = this;
+  const self = this;
 
   playerIds.forEach(function (playerId) {
-    var player = players[playerId];
+    const player = players[playerId];
     // States which are external are managed by a different cell, therefore changes made to these
     // states are not saved unless they are grouped with one or more internal states from the current cell.
     // See util.groupStates() method near the bottom of this file for details.
-    if (player.subtype == 'bot' && !player.external) {
-      var radius = Math.round(player.diam / 2);
-      var isBotOnEdge = player.x <= radius || player.x >= config.WORLD_WIDTH - radius ||
-        player.y <= radius || player.y >= config.WORLD_HEIGHT - radius;
+    if (player.subtype === 'bot' && !player.external) {
+      const radius = Math.round(player.diam / 2);
+      const isBotOnEdge = player.x <= radius || player.x >= config.WORLD_WIDTH - radius ||
+          player.y <= radius || player.y >= config.WORLD_HEIGHT - radius;
 
       if (Math.random() <= player.changeDirProb || isBotOnEdge) {
-        var randIndex = Math.floor(Math.random() * self.botMoves.length);
+        const randIndex = Math.floor(Math.random() * self.botMoves.length);
         player.repeatOp = self.botMoves[randIndex];
       }
       if (player.repeatOp) {
@@ -225,12 +225,12 @@ CellController.prototype.generateBotOps = function (playerIds, players, coins) {
 };
 
 CellController.prototype.keepPlayerOnGrid = function (player) {
-  var radius = Math.round(player.diam / 2);
+  const radius = Math.round(player.diam / 2);
 
-  var leftX = player.x - radius;
-  var rightX = player.x + radius;
-  var topY = player.y - radius;
-  var bottomY = player.y + radius;
+  const leftX = player.x - radius;
+  const rightX = player.x + radius;
+  const topY = player.y - radius;
+  const bottomY = player.y + radius;
 
   if (leftX < 0) {
     player.x = radius;
@@ -245,23 +245,23 @@ CellController.prototype.keepPlayerOnGrid = function (player) {
 };
 
 CellController.prototype.applyPlayerOps = function (playerIds, players, coins) {
-  var self = this;
+  const self = this;
 
   playerIds.forEach(function (playerId) {
-    var player = players[playerId];
+    const player = players[playerId];
 
-    var playerOp = player.op;
-    var moveSpeed;
-    if (player.subtype == 'bot') {
+    const playerOp = player.op;
+    let moveSpeed;
+    if (player.subtype === 'bot') {
       moveSpeed = player.speed;
     } else {
       moveSpeed = config.PLAYER_DEFAULT_MOVE_SPEED;
     }
 
     if (playerOp) {
-      var movementVector = {x: 0, y: 0};
-      var movedHorizontally = false;
-      var movedVertically = false;
+      const movementVector = {x: 0, y: 0};
+      let movedHorizontally = false;
+      let movedVertically = false;
 
       if (playerOp.u) {
         movementVector.y = -moveSpeed;
@@ -316,13 +316,13 @@ CellController.prototype.applyPlayerOps = function (playerIds, players, coins) {
 };
 
 CellController.prototype.findPlayerOverlaps = function (playerIds, players, coins) {
-  var self = this;
+  const self = this;
 
-  var playerTree = new rbush();
-  var hitAreaList = [];
+  const playerTree = new rbush();
+  const hitAreaList = [];
 
   playerIds.forEach(function (playerId) {
-    var player = players[playerId];
+    const player = players[playerId];
     player.hitArea = self.generateHitArea(player);
     hitAreaList.push(player.hitArea);
   });
@@ -330,9 +330,9 @@ CellController.prototype.findPlayerOverlaps = function (playerIds, players, coin
   playerTree.load(hitAreaList);
 
   playerIds.forEach(function (playerId) {
-    var player = players[playerId];
+    const player = players[playerId];
     playerTree.remove(player.hitArea);
-    var hitList = playerTree.search(player.hitArea);
+    const hitList = playerTree.search(player.hitArea);
     playerTree.insert(player.hitArea);
 
     hitList.forEach(function (hit) {
@@ -343,16 +343,16 @@ CellController.prototype.findPlayerOverlaps = function (playerIds, players, coin
     });
   });
 
-  var coinIds = Object.keys(coins);
+  const coinIds = Object.keys(coins);
   coinIds.forEach(function (coinId) {
-    var coin = coins[coinId];
-    var coinHitArea = self.generateHitArea(coin);
-    var hitList = playerTree.search(coinHitArea);
+    const coin = coins[coinId];
+    const coinHitArea = self.generateHitArea(coin);
+    const hitList = playerTree.search(coinHitArea);
 
     if (hitList.length) {
       // If multiple players hit the coin, give it to a random one.
-      var randomIndex = Math.floor(Math.random() * hitList.length);
-      var coinWinner = hitList[randomIndex].target;
+      const randomIndex = Math.floor(Math.random() * hitList.length);
+      const coinWinner = hitList[randomIndex].target;
 
       if (!coinWinner.coinOverlaps) {
         coinWinner.coinOverlaps = [];
@@ -367,7 +367,7 @@ CellController.prototype.findPlayerOverlaps = function (playerIds, players, coin
 };
 
 CellController.prototype.generateHitArea = function (target) {
-  var targetRadius = target.r || Math.round(target.diam / 2);
+  const targetRadius = target.r || Math.round(target.diam / 2);
   return {
     target: target,
     minX: target.x - targetRadius,
@@ -378,14 +378,14 @@ CellController.prototype.generateHitArea = function (target) {
 };
 
 CellController.prototype.testCircleCollision = function (a, b) {
-  var radiusA = a.r || Math.round(a.diam / 2);
-  var radiusB = b.r || Math.round(b.diam / 2);
+  const radiusA = a.r || Math.round(a.diam / 2);
+  const radiusB = b.r || Math.round(b.diam / 2);
 
-  var circleA = new SAT.Circle(new SAT.Vector(a.x, a.y), radiusA);
-  var circleB = new SAT.Circle(new SAT.Vector(b.x, b.y), radiusB);
+  const circleA = new SAT.Circle(new SAT.Vector(a.x, a.y), radiusA);
+  const circleB = new SAT.Circle(new SAT.Vector(b.x, b.y), radiusB);
 
-  var response = new SAT.Response();
-  var collided = SAT.testCircleCircle(circleA, circleB, response);
+  const response = new SAT.Response();
+  const collided = SAT.testCircleCircle(circleA, circleB, response);
 
   return {
     collided: collided,
@@ -394,14 +394,14 @@ CellController.prototype.testCircleCollision = function (a, b) {
 };
 
 CellController.prototype.resolvePlayerCollision = function (player, otherPlayer) {
-  var result = this.testCircleCollision(player, otherPlayer);
+  const result = this.testCircleCollision(player, otherPlayer);
 
   if (result.collided) {
-    var olv = result.overlapV;
+    const olv = result.overlapV;
 
-    var totalMass = player.mass + otherPlayer.mass;
-    var playerBuff = player.mass / totalMass;
-    var otherPlayerBuff = otherPlayer.mass / totalMass;
+    const totalMass = player.mass + otherPlayer.mass;
+    const playerBuff = player.mass / totalMass;
+    const otherPlayerBuff = otherPlayer.mass / totalMass;
 
     player.x -= olv.x * otherPlayerBuff;
     player.y -= olv.y * otherPlayerBuff;

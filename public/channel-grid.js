@@ -4,9 +4,9 @@ if (typeof module == 'undefined') {
   };
 }
 
-var DEFAULT_LINE_OF_SIGHT = 1000;
+const DEFAULT_LINE_OF_SIGHT = 1000;
 
-var ChannelGrid = function (options) {
+const ChannelGrid = function (options) {
   this.worldWidth = options.worldWidth;
   this.worldHeight = options.worldHeight;
   this.cellOverlapDistance = options.cellOverlapDistance;
@@ -21,10 +21,10 @@ var ChannelGrid = function (options) {
 };
 
 ChannelGrid.prototype._generateEmptyGrid = function (rows, cols) {
-  var grid = [];
-  for (var r = 0; r < rows; r++) {
+  const grid = [];
+  for (let r = 0; r < rows; r++) {
     grid[r] = [];
-    for (var c = 0; c < cols; c++) {
+    for (let c = 0; c < cols; c++) {
       grid[r][c] = [];
     }
   }
@@ -43,7 +43,7 @@ ChannelGrid.prototype.convertCoordinatesToCellIndex = function (coords) {
 };
 
 ChannelGrid.prototype.getCellIndex = function (object) {
-  var coords = this.getCellCoordinates(object);
+  const coords = this.getCellCoordinates(object);
   return this.convertCoordinatesToCellIndex(coords);
 };
 
@@ -55,9 +55,9 @@ ChannelGrid.prototype.getCellCoordinates = function (object) {
 };
 
 ChannelGrid.prototype.getCellBounds = function (cellIndex) {
-  var gridCoords = this.convertCellIndexToCoordinates(cellIndex);
-  var x = gridCoords.c * this.cellWidth;
-  var y = gridCoords.r * this.cellHeight;
+  const gridCoords = this.convertCellIndexToCoordinates(cellIndex);
+  const x = gridCoords.c * this.cellWidth;
+  const y = gridCoords.r * this.cellHeight;
   return {
     minX: x,
     minY: y,
@@ -70,44 +70,44 @@ ChannelGrid.prototype.getAllCellCoordinates = function (object, options) {
   if (!options) {
     options = {};
   }
-  var overlapDist = this.cellOverlapDistance;
-  var exclusions = {};
+  const overlapDist = this.cellOverlapDistance;
+  const exclusions = {};
   if (options.excludeCellIndexes) {
     options.excludeCellIndexes.forEach(function (cellIndex) {
       exclusions[cellIndex] = true;
     });
   }
 
-  var objectArea = {
+  const objectArea = {
     minX: object.x - overlapDist,
     minY: object.y - overlapDist,
     maxX: object.x + overlapDist,
     maxY: object.y + overlapDist
   };
-  var minCell = this.getCellCoordinates({
+  const minCell = this.getCellCoordinates({
     x: objectArea.minX,
     y: objectArea.minY
   });
-  var maxCell = this.getCellCoordinates({
+  const maxCell = this.getCellCoordinates({
     x: objectArea.maxX,
     y: objectArea.maxY
   });
-  var gridArea = {
+  const gridArea = {
     minC: Math.max(minCell.c, 0),
     minR: Math.max(minCell.r, 0),
     maxC: Math.min(maxCell.c, this.cols - 1),
     maxR: Math.min(maxCell.r, this.rows - 1)
   };
 
-  var affectedCells = [];
+  const affectedCells = [];
 
-  for (var r = gridArea.minR; r <= gridArea.maxR; r++) {
-    for (var c = gridArea.minC; c <= gridArea.maxC; c++) {
-      var coords = {
+  for (let r = gridArea.minR; r <= gridArea.maxR; r++) {
+    for (let c = gridArea.minC; c <= gridArea.maxC; c++) {
+      const coords = {
         r: r,
         c: c
       };
-      var cellIndex = this.convertCoordinatesToCellIndex(coords);
+      const cellIndex = this.convertCoordinatesToCellIndex(coords);
       if (!exclusions[cellIndex]) {
         affectedCells.push(coords);
       }
@@ -117,9 +117,9 @@ ChannelGrid.prototype.getAllCellCoordinates = function (object, options) {
 };
 
 ChannelGrid.prototype.getAllCellIndexes = function (object) {
-  var self = this;
-  var cellIndexes = [];
-  var coordsList = this.getAllCellCoordinates(object);
+  const self = this;
+  const cellIndexes = [];
+  const coordsList = this.getAllCellCoordinates(object);
 
   coordsList.forEach(function (coords) {
     cellIndexes.push(coords.r * self.cols + coords.c);
@@ -133,10 +133,10 @@ ChannelGrid.prototype._getGridChannelName = function (channelName, col, row) {
 
 
 ChannelGrid.prototype._flushPublishGrid = function (channelName, grid) {
-  for (var r = 0; r < this.rows; r++) {
-    for (var c = 0; c < this.cols; c++) {
+  for (let r = 0; r < this.rows; r++) {
+    for (let c = 0; c < this.cols; c++) {
       if (grid[r] && grid[r][c]) {
-        var states = grid[r][c];
+        let states = grid[r][c];
         if (states.length) {
           this.exchange.publish(this._getGridChannelName(channelName, c, r), states);
         }
@@ -147,18 +147,18 @@ ChannelGrid.prototype._flushPublishGrid = function (channelName, grid) {
 
 
 ChannelGrid.prototype.publish = function (channelName, objects, options) {
-  var self = this;
+  const self = this;
   if (!options) {
     options = {};
   }
 
-  var grid = this._generateEmptyGrid(this.rows, this.cols);
+  const grid = this._generateEmptyGrid(this.rows, this.cols);
 
   objects.forEach(function (obj) {
-    var affectedCells;
+    let affectedCells;
     if (options.cellIndexesFactory) {
-      var affectedCells = [];
-      var cellIndexes = options.cellIndexesFactory(obj);
+      affectedCells = [];
+      const cellIndexes = options.cellIndexesFactory(obj);
       cellIndexes.forEach(function (index) {
         affectedCells.push(self.convertCellIndexToCoordinates(index));
       });
@@ -178,11 +178,11 @@ ChannelGrid.prototype.publish = function (channelName, objects, options) {
 };
 
 ChannelGrid.prototype.publishToCells = function (channelName, objects, cellIndexes) {
-  var self = this;
+  const self = this;
 
-  var grid = this._generateEmptyGrid(this.rows, this.cols);
+  const grid = this._generateEmptyGrid(this.rows, this.cols);
 
-  var targetCells = [];
+  const targetCells = [];
   cellIndexes.forEach(function (index) {
     targetCells.push(self.convertCellIndexToCoordinates(index));
   });
@@ -199,18 +199,18 @@ ChannelGrid.prototype.publishToCells = function (channelName, objects, cellIndex
 };
 
 ChannelGrid.prototype.watchCell = function (channelName, col, row, watcher) {
-  var gridChannelName = this._getGridChannelName(channelName, col, row);
+  const gridChannelName = this._getGridChannelName(channelName, col, row);
   this.exchange.subscribe(gridChannelName).watch(watcher);
 };
 
 ChannelGrid.prototype.watchCellAtIndex = function (channelName, cellIndex, watcher) {
-  var coords = this.convertCellIndexToCoordinates(cellIndex);
+  const coords = this.convertCellIndexToCoordinates(cellIndex);
   this.watchCell(channelName, coords.c, coords.r, watcher);
 };
 
 ChannelGrid.prototype.unwatchCell = function (channelName, col, row, watcher) {
-  var gridChannelName = this._getGridChannelName(channelName, col, row);
-  var channel = this.exchange.channel(gridChannelName);
+  const gridChannelName = this._getGridChannelName(channelName, col, row);
+  const channel = this.exchange.channel(gridChannelName);
   channel.unwatch(watcher);
   channel.unsubscribe();
   channel.destroy();
@@ -220,24 +220,24 @@ ChannelGrid.prototype.updateCellWatchers = function (state, channelName, options
   if (!this.watchingCells[channelName]) {
     this.watchingCells[channelName] = {};
   }
-  var lineOfSight = options.lineOfSight || DEFAULT_LINE_OF_SIGHT;
-  var watchMap = this.watchingCells[channelName];
-  var sightArea = {
+  const lineOfSight = options.lineOfSight || DEFAULT_LINE_OF_SIGHT;
+  const watchMap = this.watchingCells[channelName];
+  const sightArea = {
     minX: state.x - lineOfSight,
     minY: state.y - lineOfSight,
     maxX: state.x + lineOfSight,
     maxY: state.y + lineOfSight
   };
-  var minCol = Math.max(Math.floor(sightArea.minX / this.cellWidth), 0);
-  var maxCol = Math.min(Math.floor(sightArea.maxX / this.cellWidth), this.cols - 1);
-  var minRow = Math.max(Math.floor(sightArea.minY / this.cellHeight), 0);
-  var maxRow = Math.min(Math.floor(sightArea.maxY / this.cellHeight), this.rows - 1);
+  const minCol = Math.max(Math.floor(sightArea.minX / this.cellWidth), 0);
+  const maxCol = Math.min(Math.floor(sightArea.maxX / this.cellWidth), this.cols - 1);
+  const minRow = Math.max(Math.floor(sightArea.minY / this.cellHeight), 0);
+  const maxRow = Math.min(Math.floor(sightArea.maxY / this.cellHeight), this.rows - 1);
 
-  var matchedCells = {};
+  const matchedCells = {};
 
-  for (var r = minRow; r <= maxRow; r++) {
-    for (var c = minCol; c <= maxCol; c++) {
-      var colRowKey = c + ',' + r;
+  for (let r = minRow; r <= maxRow; r++) {
+    for (let c = minCol; c <= maxCol; c++) {
+      const colRowKey = c + ',' + r;
       matchedCells[colRowKey] = {col: c, row: r};
       if (!watchMap[colRowKey]) {
         watchMap[colRowKey] = {col: c, row: r};
@@ -246,10 +246,10 @@ ChannelGrid.prototype.updateCellWatchers = function (state, channelName, options
     }
   }
 
-  for (var i in watchMap) {
+  for (let i in watchMap) {
     if (watchMap.hasOwnProperty(i)) {
       if (!matchedCells[i]) {
-        var coords = watchMap[i];
+        const coords = watchMap[i];
         this.unwatchCell(channelName, coords.col, coords.row, handler);
         delete watchMap[i];
       }

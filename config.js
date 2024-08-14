@@ -90,7 +90,7 @@ module.exports = {
   }
 };
 
-var privateProps = {
+const privateProps = {
   ccid: true,
   tcid: true,
   mass: true,
@@ -106,7 +106,7 @@ var privateProps = {
 };
 
 function genericStateTransformer(state) {
-  var clone = {};
+  const clone = {};
   Object.keys(state).forEach(function (key) {
     if (!privateProps[key]) {
       clone[key] = state[key];

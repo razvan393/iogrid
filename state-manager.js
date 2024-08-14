@@ -1,11 +1,11 @@
-var StateManager = function (options) {
+const StateManager = function (options) {
   this.channelGrid = options.channelGrid;
   this.stateRefs = options.stateRefs;
 };
 
 StateManager.prototype.create = function (state) {
-  var stateCellIndex = this.channelGrid.getCellIndex(state);
-  var stateRef = {
+  const stateCellIndex = this.channelGrid.getCellIndex(state);
+  const stateRef = {
     id: state.id,
     tcid: stateCellIndex, // Target cell index.
     type: state.type,
